@@ -13,7 +13,7 @@
         </p>
       </div>
       
-      <form class="mt-8 space-y-6" @submit.prevent="handleSubmit">
+      <div class="mt-8 space-y-6">
         <div class="rounded-md shadow-sm -space-y-px">
           <div>
             <label for="email" class="sr-only">Email</label>
@@ -52,6 +52,7 @@
               required
               class="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-b-md focus:outline-none focus:ring-blue-500 focus:border-blue-500 focus:z-10 sm:text-sm"
               placeholder="Confirmar contraseña"
+              @keyup.enter="handleSubmit"
             />
           </div>
         </div>
@@ -70,7 +71,8 @@
 
         <div>
           <button
-            type="submit"
+            type="button"
+            @click="handleSubmit"
             :disabled="authStore.loading || !isFormValid"
             class="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed"
           >
@@ -87,7 +89,7 @@
             ← Volver al inicio
           </router-link>
         </div>
-      </form>
+      </div>
     </div>
   </div>
 </template>
@@ -117,30 +119,38 @@ const isFormValid = computed(() => {
          form.value.password === form.value.confirmPassword
 })
 
-const handleSubmit = async () => {
-  authStore.clearError()
-  formError.value = ''
-  successMessage.value = ''
-
-  // Validate form
-  if (form.value.password !== form.value.confirmPassword) {
-    formError.value = 'Las contraseñas no coinciden'
-    return
-  }
-
-  if (form.value.password.length < 6) {
-    formError.value = 'La contraseña debe tener al menos 6 caracteres'
-    return
-  }
-
-  const result = await authStore.register(form.value.email, form.value.password)
+const handleSubmit = async (event: Event) => {
+  event.preventDefault()
   
-  if (result.success) {
-    successMessage.value = result.message || 'Cuenta creada exitosamente'
-    // Redirect after successful registration
-    setTimeout(() => {
-      router.push('/dashboard')
-    }, 1500)
+  try {
+    authStore.clearError()
+    formError.value = ''
+    successMessage.value = ''
+
+    // Validate form
+    if (form.value.password !== form.value.confirmPassword) {
+      formError.value = 'Las contraseñas no coinciden'
+      return
+    }
+
+    if (form.value.password.length < 6) {
+      formError.value = 'La contraseña debe tener al menos 6 caracteres'
+      return
+    }
+
+    const result = await authStore.register(form.value.email, form.value.password)
+    
+    if (result.success) {
+      successMessage.value = result.message || 'Cuenta creada exitosamente'
+      // Redirect after successful registration
+      setTimeout(() => {
+        router.push('/dashboard')
+      }, 1500)
+    }
+    // Error handling is done in the store and will be displayed via authStore.error
+  } catch (error) {
+    console.error('Registration error:', error)
+    // The error will be displayed via authStore.error
   }
 }
 
