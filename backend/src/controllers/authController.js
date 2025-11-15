@@ -164,10 +164,7 @@ const login = async (req, res) => {
     }
 };
 
-// Logout user (client-side token removal, but we can blacklist if needed)
 const logout = async (req, res) => {
-    // Since we're using stateless JWT, logout is mainly handled client-side
-    // But we can implement token blacklisting here if needed in the future
     res.json({
         success: true,
         message: 'Logout exitoso'

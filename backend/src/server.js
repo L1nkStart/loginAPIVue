@@ -70,8 +70,8 @@ app.use((error, req, res, next) => {
 
 // Start server
 app.listen(PORT, () => {
-    console.log(`🚀 Express server running on port ${PORT}`);
-    console.log(`📊 Health check: http://localhost:${PORT}/health`);
-    console.log(`🔐 Auth API: http://localhost:${PORT}/api/auth`);
-    console.log(`🌍 Environment: ${process.env.NODE_ENV || 'development'}`);
+    console.log(`Express server running on port ${PORT}`);
+    console.log(`Health check: http://localhost:${PORT}/health`);
+    console.log(`Auth API: http://localhost:${PORT}/api/auth`);
+    console.log(`Environment: ${process.env.NODE_ENV || 'development'}`);
 });
